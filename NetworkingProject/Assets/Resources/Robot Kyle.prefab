@@ -1390,7 +1390,7 @@ GameObject:
   - component: {fileID: 4165218182525377426}
   - component: {fileID: 1567396152}
   - component: {fileID: 5750506323791835218}
-  - component: {fileID: 1567396153}
+  - component: {fileID: 2827227489021156364}
   m_Layer: 0
   m_Name: Robot Kyle
   m_TagString: Untagged
@@ -1406,7 +1406,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884033503103139660}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.72324, y: 0, z: 9.501884}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 884033503103427336}
@@ -1464,7 +1464,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beam: {fileID: 5471933094507940283}
+  playerUIPrefab: {fileID: 6540595752697025599, guid: f532371d59f281a41acda5fe4d7c720b, type: 3}
   directionDampTime: 0.1
+  isFiring: 0
   health: 1
 --- !u!114 &4165218182525377426
 MonoBehaviour:
@@ -1483,11 +1485,11 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
+  observableSearch: 2
   ObservedComponents:
+  - {fileID: 1567396151}
   - {fileID: 1567396152}
   - {fileID: 5750506323791835218}
-  - {fileID: 1567396151}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1537,7 +1539,7 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
---- !u!114 &1567396153
+--- !u!114 &2827227489021156364
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1857,7 +1859,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5471933094507940283}
   m_LocalRotation: {x: -0.5511755, y: 0.44295105, z: 0.5511755, w: 0.44295105}
-  m_LocalPosition: {x: -0.39599583, y: 1.5664119, z: 0}
+  m_LocalPosition: {x: -0.477, y: 1.937, z: 0}
   m_LocalScale: {x: 0.049999993, y: 0.049999993, z: 2.9221094}
   m_Children: []
   m_Father: {fileID: 884033503103427376}

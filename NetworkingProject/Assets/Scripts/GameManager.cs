@@ -10,9 +10,25 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance;
 
+    public GameObject playerPrefab;
+
     private void Start()
     {
         Instance = this;
+
+        if (!playerPrefab)
+            Debug.LogError("Player Prefab is missing", this);
+        else
+        {
+            if (!PlayerControls.LocalPlayerInstance)
+            {
+                Debug.LogFormat("we are instantiating LocalPLayer freom {0}", SceneManagerHelper.ActiveSceneName);
+
+                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+            }
+            else
+                Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
+        }
     }
 
 

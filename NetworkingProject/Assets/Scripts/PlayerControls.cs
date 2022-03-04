@@ -14,13 +14,18 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
     private Animator animator;
 
     private Vector2 movementVector;
-    
+
     [SerializeField]
     GameObject beam;
 
+    public static GameObject LocalPlayerInstance;
+
+    [SerializeField]
+    public PlayerUI playerUIPrefab;
+
     //possibly temp
     public float directionDampTime = 0.25f;
-    private bool isFiring = false;
+    public bool isFiring = false;
     public float health = 1.0f;
 
     #endregion
@@ -38,13 +43,17 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         else
             beam.SetActive(false);
 
+        if (photonView.IsMine)
+            PlayerControls.LocalPlayerInstance = gameObject;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        CameraWork _cameraWork = this.gameObject.GetComponent<CameraWork>();
+        CameraWork _cameraWork = gameObject.GetComponent<CameraWork>();
 
-        if (!_cameraWork)
+        if (_cameraWork)
         {
             if (photonView.IsMine)
             {
@@ -53,10 +62,23 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
             Debug.LogError("CameraWork is not found", this);
+
+#if UNITY_5_4_OR_NEWER
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+#endif
+
+        if (playerUIPrefab)
+        {
+            PlayerUI _uiGo = Instantiate(playerUIPrefab);
+            _uiGo.SetTarget(this);
+
+        }
+        else
+            Debug.LogWarning("PlayerUI prefeb is missing", this);
     }
 
     #region Enable/Disable functions & subscribed functions
-    private void OnEnable()
+    public override void OnEnable()
     {
         playerMovement = inputManager.PlayerControls.Movement;
         playerMovement.Enable();
@@ -65,13 +87,19 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         inputManager.PlayerControls.Attack.Enable();
     }
 
-    private void OnDisable()
+#if UNITY_5_4_OR_NEWER
+    public override void OnDisable()
     {
         playerMovement.Disable();
 
         inputManager.PlayerControls.Attack.performed -= Attack;//unsubscribes the attack binding
         inputManager.PlayerControls.Attack.Disable();
+
+        base.OnDisable();
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+#endif
+
 
     private void Attack(InputAction.CallbackContext obj)//The subscribed attack function
     {
@@ -79,12 +107,12 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (inputManager.PlayerControls.Attack.ReadValue<float>() > 0.0f)
             {
-                beam.SetActive(true);
+                //beam.SetActive(true);
                 isFiring = true;
             }
             else
             {
-                beam.SetActive(false);
+                //beam.SetActive(false);
                 isFiring = false;
             }
         }
@@ -95,8 +123,8 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per frame
     void Update()
     {
-        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
-            return;
+        //if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        //    return;
 
         if (!animator)
             return;
@@ -109,9 +137,10 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         animator.SetFloat("Speed", h * h + v);
         animator.SetFloat("Direction", h, directionDampTime, Time.deltaTime);
 
-        if (health <= 0.0f)
+        if (health <= 0.0f && photonView.IsMine)
             GameManager.Instance.LeaveRoom();
 
+            beam.SetActive(isFiring);
     }
 
     #region Triggers and collisions
@@ -121,7 +150,7 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         if(!photonView.IsMine)
             return;
 
-        if (other.name != "Beam")
+        if (!other.name.Contains("Beam"))
             return;
 
         health -= 0.1f;
@@ -132,7 +161,7 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine)
             return;
 
-        if (other.name != "Beam")
+        if (!other.name.Contains("Beam"))
             return;
 
         health -= 0.1f * Time.deltaTime;
@@ -140,19 +169,53 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 
     #endregion
 
+#if !UNITY_5_4_OR_NEWER
+
+    private void OnLevelWasLoaded(int level)
+    {
+        this.CalledOnLevelWasLoaded(level);
+    }
+#endif
+
+    private void CalledOnLevelWasLoaded(int level)
+    {
+        if(!Physics.Raycast(transform.position, -Vector3.up, 5f))
+        {
+            transform.position = new Vector3(0f, 5f, 0f);
+        }
+
+        PlayerUI _uiGo = Instantiate(playerUIPrefab);
+        _uiGo.SetTarget(this);
+    }
+
+
+#if UNITY_5_4_OR_NEWER
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadingMode)
+    {
+        this.CalledOnLevelWasLoaded(scene.buildIndex);
+    }
+
+#endif
+
     #region IPunObservable implementation
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if(stream.IsWriting)//sending own data
+        if (stream.IsWriting)
         {
+            // We own this player: send the others our data
             stream.SendNext(isFiring);
             stream.SendNext(health);
         }
-        else// receiving others data
+        else
         {
-            this.isFiring = (bool)stream.ReceiveNext();
-            this.health = (float)stream.ReceiveNext();
+            // Network player, receive data
+            isFiring = (bool)stream.ReceiveNext();
+            health = (float)stream.ReceiveNext();
+
+            Debug.Log(isFiring);
+            Debug.Log(health);
         }
     }
 

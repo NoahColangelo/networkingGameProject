@@ -791,6 +791,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Robot Kyle
       objectReference: {fileID: 0}
+    - target: {fileID: 884033503103139660, guid: 2af5828e00580f54192a37f2486217d8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 884033503103427436, guid: 2af5828e00580f54192a37f2486217d8, type: 3}
       propertyPath: m_RootOrder
       value: 1

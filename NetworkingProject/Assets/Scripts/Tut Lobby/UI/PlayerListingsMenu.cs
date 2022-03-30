@@ -86,11 +86,38 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
 
     public void OnClick_StartGame()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient && CheckPlayersReady())
         {
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
             PhotonNetwork.LoadLevel(1);
         }
+    }
+
+    private bool CheckPlayersReady()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return false;
+
+        if (_listings.Count== 1)//if the host wants to play alone, or for testing
+            return true;
+
+        int currentPlayerNum = _listings.Count - 1;
+        int playersReadyNum = 0;
+
+        foreach(PlayerListing listing in _listings)
+        {
+            if (listing.Player == PhotonNetwork.LocalPlayer)//does not count the master client
+                continue;
+            else if(listing.GetComponent<UnityEngine.UI.RawImage>().color == Color.green)
+            {
+                playersReadyNum++;
+            }
+        }
+
+        if(playersReadyNum == currentPlayerNum)
+            return true;
+        else
+            return false;
     }
 }

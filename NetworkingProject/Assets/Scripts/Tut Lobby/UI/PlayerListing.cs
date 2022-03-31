@@ -24,6 +24,13 @@ public class PlayerListing : MonoBehaviourPunCallbacks
 
     private void SetReadyUp(Player player)
     {
+        if(player == PhotonNetwork.MasterClient)//master client does not need to ready up
+        {
+            _rawImage.color = Color.cyan;//cyan used to signify the master client
+            return;
+        }
+            
+
         bool isReady = false;
         if (player.CustomProperties.ContainsKey("isReady"))
             isReady = (bool)player.CustomProperties["isReady"];

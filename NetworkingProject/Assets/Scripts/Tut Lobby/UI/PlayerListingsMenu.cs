@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -14,15 +15,16 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
     private List<PlayerListing> _listings = new List<PlayerListing>();
     private RoomsCanvases _roomsCanvases;
 
-    private void Awake()
-    {
-        
-    }
+    [SerializeField]
+    private GameObject startGameButton;
+    [SerializeField]
+    private GameObject readyUpButton;
 
     public override void OnEnable()
     {
         base.OnEnable();
         GetCurrentRoomPlayers();
+        CheckPlayerStatus();
     }
 
     public override void OnDisable()
@@ -72,6 +74,7 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         AddPlayerListing(newPlayer);
+
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -82,6 +85,15 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
             Destroy(_listings[index].gameObject);
             _listings.RemoveAt(index);
         }
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        base.OnMasterClientSwitched(newMasterClient);
+        CheckPlayerStatus();
+
+        int index = _listings.FindIndex(x => x.Player == newMasterClient);
+        _listings[index].SetPlayerInfo(newMasterClient);
     }
 
     public void OnClick_StartGame()
@@ -119,5 +131,20 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
             return true;
         else
             return false;
+    }
+
+    private void CheckPlayerStatus()
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            startGameButton.GetComponent<Button>().interactable = true;
+            readyUpButton.GetComponent<Button>().interactable = false;
+        }
+        else
+        {
+            startGameButton.GetComponent<Button>().interactable = false;
+            readyUpButton.GetComponent<Button>().interactable = true;
+        }
+
     }
 }

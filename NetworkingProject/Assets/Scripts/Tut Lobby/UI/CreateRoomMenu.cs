@@ -9,8 +9,11 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     private Text _roomName;
+    [SerializeField]
+    private Text _playerNickName;
 
     private RoomsCanvases _roomsCanvases;
+
     public void FirstInitialize(RoomsCanvases canvases)
     {
         _roomsCanvases = canvases;
@@ -25,7 +28,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         options.MaxPlayers = 4;
         options.BroadcastPropsChangeToAll = true;
 
-        if (_roomName != null)
+        if (_roomName.text != null)
             PhotonNetwork.JoinOrCreateRoom(_roomName.text, options, TypedLobby.Default);
         else
             Debug.Log("pleae add a name to the room before creating");
@@ -41,5 +44,11 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.Log("Room creation failed: " + message, this);
+    }
+
+    public void OnEdit_Nickname()
+    {
+        int randNum = Random.Range(0, 9999);
+        PhotonNetwork.NickName = _playerNickName.text + randNum.ToString();
     }
 }

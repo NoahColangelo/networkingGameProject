@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   _gameversion: 0.0.0
-  _nickname: Noah
+  _nickname: User

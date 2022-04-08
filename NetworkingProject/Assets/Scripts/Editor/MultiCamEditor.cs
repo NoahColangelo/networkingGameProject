@@ -40,6 +40,12 @@ public class MultiCamEditor : Editor
 
         multiCam.cameraPresetValues[index]._pan = EditorGUILayout.FloatField("Pan", multiCam.cameraPresetValues[index]._pan);
 
+        EditorGUILayout.Space();
+
+        multiCam.cameraPresetValues[index]._smoothSpeed = EditorGUILayout.FloatField("Smooth Speed", multiCam.cameraPresetValues[index]._smoothSpeed);
+
+        EditorGUILayout.Space();
+
         //EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.LabelField("Look At Offset"/*, GUILayout.MaxWidth(200)*/);

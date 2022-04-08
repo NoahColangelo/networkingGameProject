@@ -51,17 +51,17 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 
     void Start()
     {
-        //CameraWork _cameraWork = gameObject.GetComponent<CameraWork>();
-        //
-        //if (_cameraWork)
-        //{
-        //    if (photonView.IsMine)
-        //    {
-        //        _cameraWork.OnStartFollowing();
-        //    }
-        //}
-        //else
-        //    Debug.LogError("CameraWork is not found", this);
+        MultiCam _multicam = gameObject.GetComponent<MultiCam>();
+
+        if (_multicam)
+        {
+            if (photonView.IsMine)
+            {
+                _multicam.OnStartFollowing();
+            }
+        }
+        else
+            Debug.LogError("MultiCam is not found", this);
 
 #if UNITY_5_4_OR_NEWER
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
@@ -169,14 +169,6 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 
     #endregion
 
-#if !UNITY_5_4_OR_NEWER
-
-    private void OnLevelWasLoaded(int level)
-    {
-        this.CalledOnLevelWasLoaded(level);
-    }
-#endif
-
     private void CalledOnLevelWasLoaded(int level)
     {
         if(!Physics.Raycast(transform.position, -Vector3.up, 5f))
@@ -213,9 +205,6 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
             // Network player, receive data
             isFiring = (bool)stream.ReceiveNext();
             health = (float)stream.ReceiveNext();
-
-            Debug.Log(isFiring);
-            Debug.Log(health);
         }
     }
 

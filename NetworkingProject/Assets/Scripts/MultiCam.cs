@@ -5,36 +5,8 @@ using UnityEngine;
 
 public class MultiCam : MonoBehaviour
 {
-    public class MultiCamPresets
-    {
-        public float _distance = 0.0f;
-        public float _height = 0.0f;
-        public float _pan = 0.0f;
-        public Vector3 _lookAtOffset = Vector3.zero;
-
-        public float _newDistance = 0.0f;
-        public float _newHeight = 0.0f;
-        public float _newPan = 0.0f;
-        public Vector3 _newLookAtOffset = Vector3.zero;
-
-        public void FillInfo(float distance, float height, float pan, Vector3 lookAtOffset)
-        {
-            _distance = distance;
-            _height = height;
-            _pan = pan;
-            _lookAtOffset = lookAtOffset;
-        }
-        public void CombineInfo(MultiCamPresets multiCamPresets)
-        {
-            _newDistance = multiCamPresets._distance + _distance;
-            _newHeight = multiCamPresets._height + _height;
-            _newPan = multiCamPresets._pan + _pan;
-            _newLookAtOffset = multiCamPresets._lookAtOffset + _lookAtOffset;
-        }
-    }
-
     [HideInInspector]
-    public string[] cameraPresetChoice = new string[] {"First Person", "Third Person", "Top Down", "Custom" };
+    public string[] cameraPresetChoice = new string[3] {"First Person", "Third Person", "Top Down" };
     [HideInInspector]
     public MultiCamPresets[] cameraPresetValues = new MultiCamPresets[3] {new MultiCamPresets(), new MultiCamPresets(), new MultiCamPresets() };
     [HideInInspector]
@@ -48,36 +20,59 @@ public class MultiCam : MonoBehaviour
     private MultiCamPresets _currentPreset = new MultiCamPresets();
 
     [SerializeField]
-    private float _smoothSpeed = 1.0f;
-    [SerializeField]
-    private bool _followPlayer = false;
+    private bool _followOnStart = false;
 
     private bool lookAt;
+    private bool _followingPlayer = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        _cameraTransform = Camera.main.transform;
+        // Start following the target if wanted.
+        if (_followOnStart)
+        {
+            OnStartFollowing();
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_smoothSpeed <= 0)
-            _smoothSpeed = 1.0f;
+        // The transform target may not destroy on level load, 
+        // so we need to cover corner cases where the Main Camera is different everytime we load a new scene, and reconnect when that happens
+        //idea taken from photon tutorial camera work script
+        if (_cameraTransform == null && _followingPlayer)
+        {
+            OnStartFollowing();
+        }
 
-        _cameraTransform.position = Vector3.Lerp(_cameraTransform.position, transform.position + transform.TransformVector(_cameraOffset), _smoothSpeed * Time.deltaTime);
+        if (_followingPlayer)
+        {
+            if (_currentPreset._smoothSpeed <= 0)
+                _currentPreset._smoothSpeed = 1.0f;
 
-        if (lookAt)
-            _cameraTransform.LookAt(transform.position + _currentPreset._newLookAtOffset);
-        else
-            _cameraTransform.rotation = transform.rotation;
+            //_cameraTransform.position = Vector3.Lerp(_cameraTransform.position, transform.position + transform.TransformVector(_cameraOffset), _smoothSpeed * Time.deltaTime);
+            _cameraTransform.position = Vector3.Slerp(_cameraTransform.position, transform.position + transform.TransformVector(_cameraOffset), _currentPreset._smoothSpeed * Time.deltaTime);
+
+
+            if (lookAt)
+                _cameraTransform.LookAt(transform.position + _currentPreset._newLookAtOffset);
+            else
+                _cameraTransform.rotation = transform.rotation;
+        }
+    }
+
+    public void OnStartFollowing()
+    {
+        _cameraTransform = Camera.main.transform;
+        _followingPlayer = true;
     }
 
     public void FirstPersonCamera()
     {
         MultiCamPresets HardSetCamValue = new MultiCamPresets();
-        HardSetCamValue.FillInfo(0.0f, 2.0f, 0.0f, new Vector3(0, 1.3f, 1));//hard set values for a third person camera//hard set values for a first person camera
+        HardSetCamValue.FillInfo(0.0f, 2.0f, 0.0f, new Vector3(0, 1.3f, 1), 100.0f);//hard set values for a third person camera//hard set values for a first person camera
 
         cameraPresetValues[0].CombineInfo(HardSetCamValue);
 

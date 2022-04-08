@@ -873,4 +873,4 @@ MonoBehaviour:
   - Custom
   presetIndex: 2
   _smoothSpeed: 10
-  _followPlayer: 0
+  _followOnStart: 0

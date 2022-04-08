@@ -51,17 +51,17 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 
     void Start()
     {
-        CameraWork _cameraWork = gameObject.GetComponent<CameraWork>();
-
-        if (_cameraWork)
-        {
-            if (photonView.IsMine)
-            {
-                _cameraWork.OnStartFollowing();
-            }
-        }
-        else
-            Debug.LogError("CameraWork is not found", this);
+        //CameraWork _cameraWork = gameObject.GetComponent<CameraWork>();
+        //
+        //if (_cameraWork)
+        //{
+        //    if (photonView.IsMine)
+        //    {
+        //        _cameraWork.OnStartFollowing();
+        //    }
+        //}
+        //else
+        //    Debug.LogError("CameraWork is not found", this);
 
 #if UNITY_5_4_OR_NEWER
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;

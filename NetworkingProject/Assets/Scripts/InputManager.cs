@@ -27,12 +27,44 @@ public class @InputManager : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""BasicAttack"",
                     ""type"": ""Button"",
                     ""id"": ""ef5254a1-ffdf-4089-a59b-2c2f16d3bb2b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Ability1"",
+                    ""type"": ""Button"",
+                    ""id"": ""70695d6c-8a3a-4dfa-b0a0-2ff0c7d12731"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Ability2"",
+                    ""type"": ""Button"",
+                    ""id"": ""946afa9d-916f-446e-9e26-50a9e301d291"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Ability3"",
+                    ""type"": ""Button"",
+                    ""id"": ""8745670e-2095-4442-947d-40e20563980e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Ultimate"",
+                    ""type"": ""Button"",
+                    ""id"": ""545e2b11-fd9c-4f2c-a26c-e1e30a871974"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -98,18 +130,51 @@ public class @InputManager : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MouseAndKeyboard"",
-                    ""action"": ""Attack"",
+                    ""action"": ""BasicAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d044a3c8-840f-4076-9ef5-e5681b62bed7"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""id"": ""c5289cc2-20fe-4f9b-8e8e-9cb685769c1b"",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MouseAndKeyboard"",
-                    ""action"": ""Attack"",
+                    ""action"": ""Ability1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8137e67d-cb6e-4715-b2da-f614bef9d5f0"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseAndKeyboard"",
+                    ""action"": ""Ability2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a5b84091-4903-4bec-adb5-5318d0e2a18d"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseAndKeyboard"",
+                    ""action"": ""Ability3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e77a118-3fdc-48ac-8ace-a79a072732c9"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseAndKeyboard"",
+                    ""action"": ""Ultimate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -138,7 +203,11 @@ public class @InputManager : IInputActionCollection, IDisposable
         // PlayerControls
         m_PlayerControls = asset.FindActionMap("PlayerControls", throwIfNotFound: true);
         m_PlayerControls_Movement = m_PlayerControls.FindAction("Movement", throwIfNotFound: true);
-        m_PlayerControls_Attack = m_PlayerControls.FindAction("Attack", throwIfNotFound: true);
+        m_PlayerControls_BasicAttack = m_PlayerControls.FindAction("BasicAttack", throwIfNotFound: true);
+        m_PlayerControls_Ability1 = m_PlayerControls.FindAction("Ability1", throwIfNotFound: true);
+        m_PlayerControls_Ability2 = m_PlayerControls.FindAction("Ability2", throwIfNotFound: true);
+        m_PlayerControls_Ability3 = m_PlayerControls.FindAction("Ability3", throwIfNotFound: true);
+        m_PlayerControls_Ultimate = m_PlayerControls.FindAction("Ultimate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -189,13 +258,21 @@ public class @InputManager : IInputActionCollection, IDisposable
     private readonly InputActionMap m_PlayerControls;
     private IPlayerControlsActions m_PlayerControlsActionsCallbackInterface;
     private readonly InputAction m_PlayerControls_Movement;
-    private readonly InputAction m_PlayerControls_Attack;
+    private readonly InputAction m_PlayerControls_BasicAttack;
+    private readonly InputAction m_PlayerControls_Ability1;
+    private readonly InputAction m_PlayerControls_Ability2;
+    private readonly InputAction m_PlayerControls_Ability3;
+    private readonly InputAction m_PlayerControls_Ultimate;
     public struct PlayerControlsActions
     {
         private @InputManager m_Wrapper;
         public PlayerControlsActions(@InputManager wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_PlayerControls_Movement;
-        public InputAction @Attack => m_Wrapper.m_PlayerControls_Attack;
+        public InputAction @BasicAttack => m_Wrapper.m_PlayerControls_BasicAttack;
+        public InputAction @Ability1 => m_Wrapper.m_PlayerControls_Ability1;
+        public InputAction @Ability2 => m_Wrapper.m_PlayerControls_Ability2;
+        public InputAction @Ability3 => m_Wrapper.m_PlayerControls_Ability3;
+        public InputAction @Ultimate => m_Wrapper.m_PlayerControls_Ultimate;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -208,9 +285,21 @@ public class @InputManager : IInputActionCollection, IDisposable
                 @Movement.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMovement;
-                @Attack.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAttack;
-                @Attack.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAttack;
-                @Attack.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAttack;
+                @BasicAttack.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnBasicAttack;
+                @BasicAttack.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnBasicAttack;
+                @BasicAttack.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnBasicAttack;
+                @Ability1.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility1;
+                @Ability1.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility1;
+                @Ability1.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility1;
+                @Ability2.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility2;
+                @Ability2.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility2;
+                @Ability2.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility2;
+                @Ability3.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility3;
+                @Ability3.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility3;
+                @Ability3.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAbility3;
+                @Ultimate.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnUltimate;
+                @Ultimate.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnUltimate;
+                @Ultimate.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnUltimate;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -218,9 +307,21 @@ public class @InputManager : IInputActionCollection, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
-                @Attack.started += instance.OnAttack;
-                @Attack.performed += instance.OnAttack;
-                @Attack.canceled += instance.OnAttack;
+                @BasicAttack.started += instance.OnBasicAttack;
+                @BasicAttack.performed += instance.OnBasicAttack;
+                @BasicAttack.canceled += instance.OnBasicAttack;
+                @Ability1.started += instance.OnAbility1;
+                @Ability1.performed += instance.OnAbility1;
+                @Ability1.canceled += instance.OnAbility1;
+                @Ability2.started += instance.OnAbility2;
+                @Ability2.performed += instance.OnAbility2;
+                @Ability2.canceled += instance.OnAbility2;
+                @Ability3.started += instance.OnAbility3;
+                @Ability3.performed += instance.OnAbility3;
+                @Ability3.canceled += instance.OnAbility3;
+                @Ultimate.started += instance.OnUltimate;
+                @Ultimate.performed += instance.OnUltimate;
+                @Ultimate.canceled += instance.OnUltimate;
             }
         }
     }
@@ -237,6 +338,10 @@ public class @InputManager : IInputActionCollection, IDisposable
     public interface IPlayerControlsActions
     {
         void OnMovement(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
+        void OnBasicAttack(InputAction.CallbackContext context);
+        void OnAbility1(InputAction.CallbackContext context);
+        void OnAbility2(InputAction.CallbackContext context);
+        void OnAbility3(InputAction.CallbackContext context);
+        void OnUltimate(InputAction.CallbackContext context);
     }
 }

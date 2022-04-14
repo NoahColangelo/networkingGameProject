@@ -14,12 +14,44 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Attack",
+                    "name": "BasicAttack",
                     "type": "Button",
                     "id": "ef5254a1-ffdf-4089-a59b-2c2f16d3bb2b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "Ability1",
+                    "type": "Button",
+                    "id": "70695d6c-8a3a-4dfa-b0a0-2ff0c7d12731",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Ability2",
+                    "type": "Button",
+                    "id": "946afa9d-916f-446e-9e26-50a9e301d291",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Ability3",
+                    "type": "Button",
+                    "id": "8745670e-2095-4442-947d-40e20563980e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Ultimate",
+                    "type": "Button",
+                    "id": "545e2b11-fd9c-4f2c-a26c-e1e30a871974",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -85,18 +117,51 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "MouseAndKeyboard",
-                    "action": "Attack",
+                    "action": "BasicAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "d044a3c8-840f-4076-9ef5-e5681b62bed7",
-                    "path": "<Keyboard>/space",
+                    "id": "c5289cc2-20fe-4f9b-8e8e-9cb685769c1b",
+                    "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
                     "groups": "MouseAndKeyboard",
-                    "action": "Attack",
+                    "action": "Ability1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8137e67d-cb6e-4715-b2da-f614bef9d5f0",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseAndKeyboard",
+                    "action": "Ability2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a5b84091-4903-4bec-adb5-5318d0e2a18d",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseAndKeyboard",
+                    "action": "Ability3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3e77a118-3fdc-48ac-8ace-a79a072732c9",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseAndKeyboard",
+                    "action": "Ultimate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

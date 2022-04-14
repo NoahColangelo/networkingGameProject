@@ -8,8 +8,7 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region Variables (All)
 
-    private InputManager inputManager;
-    private InputAction playerMovement;
+    PlayerInput _playerInput;
 
     private Animator animator;
 
@@ -32,8 +31,6 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 
     void Awake()
     {
-        inputManager = new InputManager();
-
         animator = GetComponent<Animator>();
         if(!animator)
             Debug.LogError("Missing Animator Component", this);
@@ -51,6 +48,7 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 
     void Start()
     {
+        _playerInput = gameObject.GetComponent <PlayerInput>();
         MultiCam _multicam = gameObject.GetComponent<MultiCam>();
 
         if (_multicam)
@@ -63,9 +61,7 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         else
             Debug.LogError("MultiCam is not found", this);
 
-#if UNITY_5_4_OR_NEWER
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
-#endif
 
         if (playerUIPrefab)
         {
@@ -77,48 +73,11 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
             Debug.LogWarning("PlayerUI prefeb is missing", this);
     }
 
-    #region Enable/Disable functions & subscribed functions
-    public override void OnEnable()
-    {
-        playerMovement = inputManager.PlayerControls.Movement;
-        playerMovement.Enable();
-
-        inputManager.PlayerControls.Attack.performed += Attack;//subscribes the attack binding to an event
-        inputManager.PlayerControls.Attack.Enable();
-    }
-
-#if UNITY_5_4_OR_NEWER
     public override void OnDisable()
     {
-        playerMovement.Disable();
-
-        inputManager.PlayerControls.Attack.performed -= Attack;//unsubscribes the attack binding
-        inputManager.PlayerControls.Attack.Disable();
-
         base.OnDisable();
         UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
     }
-#endif
-
-
-    private void Attack(InputAction.CallbackContext obj)//The subscribed attack function
-    {
-        if (photonView.IsMine)
-        {
-            if (inputManager.PlayerControls.Attack.ReadValue<float>() > 0.0f)
-            {
-                //beam.SetActive(true);
-                isFiring = true;
-            }
-            else
-            {
-                //beam.SetActive(false);
-                isFiring = false;
-            }
-        }
-    }
-
-    #endregion
 
     // Update is called once per frame
     void Update()
@@ -129,7 +88,12 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         if (!animator)
             return;
 
-        movementVector = playerMovement.ReadValue<Vector2>();//reads the values of the keys being pressed from the input manager and stores them in movement vector
+        if (photonView.IsMine && _playerInput.GetBasicAttack())
+            isFiring = true;
+        else
+            isFiring = false;
+
+        movementVector = _playerInput.GetPlayerMovement().ReadValue<Vector2>();//reads the values of the keys being pressed from the input manager and stores them in movement vector
 
         float h = movementVector.x;
         float v = movementVector.y;

@@ -15,10 +15,17 @@ public class PlayerInput : MonoBehaviour
     private bool _ability3 = false;
     private bool _ultimate = false;
 
+    private bool[] _abilityToggle = new bool[4];
+
     private void Awake()
     {
         inputManager = new InputManager();
         playerMovement = inputManager.PlayerControls.Movement;
+
+        for (int i = 0; i < _abilityToggle.Length; i++)//sets all the toggles to false
+        {
+            _abilityToggle[i] = false;
+        }
     }
 
     #region Enable/Disable functions
@@ -74,21 +81,25 @@ public class PlayerInput : MonoBehaviour
 
     private void Ability1(InputAction.CallbackContext obj)//The subscribed Ability1 function
     {
+        _abilityToggle[0] = true;
         _ability1 = true;
     }
 
     private void Ability2(InputAction.CallbackContext obj)//The subscribed Ability2 function
     {
+        _abilityToggle[1] = true;
         _ability2 = true;
     }
 
     private void Ability3(InputAction.CallbackContext obj)//The subscribed Ability3 function
     {
+        _abilityToggle[2] = true;
         _ability3 = true;
     }
 
     private void Ultimate(InputAction.CallbackContext obj)//The subscribed Ultimate function
     {
+        _abilityToggle[3] = true;
         _ultimate = true;
     }
 
@@ -98,6 +109,16 @@ public class PlayerInput : MonoBehaviour
     public InputAction GetPlayerMovement()// Used for getting the playerMovement input values for moving the character or for animation
     {
         return playerMovement;
+    }
+
+    public bool GetAbilityToggle(int index)
+    {
+        return _abilityToggle[index];
+    }
+    
+    public void SetAbilityToggle(bool set, int index)
+    {
+        _abilityToggle[index] = set;
     }
 
     public bool GetBasicAttack()//Basic Attack get

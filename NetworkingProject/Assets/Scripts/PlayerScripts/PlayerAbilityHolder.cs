@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerAbilityHolder : MonoBehaviour
 {
+    [SerializeField]
+    private Ability _basicAttack;
+
     [Tooltip ("DO NOT CHANGE THE ARRAY SIZE FROM 4 YOU WILL CAUSE PROBLEMS!!!!")]
     public Ability[] _abilities = new Ability[4];
 
@@ -15,7 +18,7 @@ public class PlayerAbilityHolder : MonoBehaviour
         active,
         cooldown
     }
-
+    private AbilityState _basicAttackState = AbilityState.ready;
     private AbilityState[] _abilityStates = new AbilityState[4];
 
     void Start()
@@ -89,6 +92,46 @@ public class PlayerAbilityHolder : MonoBehaviour
 
     void CheckBasicAttack(float _dt)
     {
+        switch (_basicAttackState)
+        {
+            case AbilityState.ready:
 
+                if (_playerInput.GetBasicAttack())
+                {
+                    _basicAttack.Activate(gameObject);
+                    _basicAttackState = AbilityState.active;
+                }
+
+                break;
+            case AbilityState.active:
+
+                if (_basicAttack._activeTimer < _basicAttack._activeTime)
+                {
+                    _basicAttack._activeTimer += _dt;
+                    _basicAttack.Active(gameObject);
+                }
+                else
+                {
+                    _basicAttackState = AbilityState.cooldown;
+                    _basicAttack._activeTimer = 0.0f;
+                }
+
+                break;
+            case AbilityState.cooldown:
+
+                if (_basicAttack._cooldownTimer < _basicAttack._cooldownTime)
+                {
+                    _basicAttack._cooldownTimer += _dt;
+                    _basicAttack.Cooldown(gameObject);
+                }
+                else
+                {
+                    _basicAttackState = AbilityState.ready;
+                    _basicAttack._cooldownTimer = 0.0f;
+                    //_playerInput.SetAbilityToggle(false, i);//prevents any ability from immediately activating on ready state after cooldown
+                }
+
+                break;
+        }
     }
 }

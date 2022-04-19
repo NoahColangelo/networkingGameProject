@@ -16,6 +16,7 @@ public class MultiCam : MonoBehaviour
     private Transform _cameraTransform;
 
     private Vector3 _cameraOffset = Vector3.zero;
+    private Vector3 _velocity = Vector3.zero;
 
     private MultiCamPresets _currentPreset = new MultiCamPresets();
 
@@ -37,7 +38,7 @@ public class MultiCam : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         // The transform target may not destroy on level load, 
         // so we need to cover corner cases where the Main Camera is different everytime we load a new scene, and reconnect when that happens
@@ -49,11 +50,13 @@ public class MultiCam : MonoBehaviour
 
         if (_followingPlayer)
         {
-            if (_currentPreset._smoothSpeed <= 0)
-                _currentPreset._smoothSpeed = 1.0f;
+            //if (_currentPreset._smoothSpeed <= 0)
+                //_currentPreset._smoothSpeed = 1.0f;
 
             //_cameraTransform.position = Vector3.Lerp(_cameraTransform.position, transform.position + transform.TransformVector(_cameraOffset), _smoothSpeed * Time.deltaTime);
-            _cameraTransform.position = Vector3.Slerp(_cameraTransform.position, transform.position + transform.TransformVector(_cameraOffset), _currentPreset._smoothSpeed * Time.deltaTime);
+            //_cameraTransform.position = Vector3.Slerp(_cameraTransform.position, transform.position + _cameraOffset, _currentPreset._smoothSpeed * Time.deltaTime);
+            //_cameraTransform.position = Vector3.SmoothDamp(_cameraTransform.position, transform.position + _cameraOffset, ref _velocity , 0.3f);
+            _cameraTransform.position = transform.position + _cameraOffset;
 
 
             if (lookAt)
@@ -98,7 +101,7 @@ public class MultiCam : MonoBehaviour
     public void TopDownCamera()
     {
         MultiCamPresets HardSetCamValue = new MultiCamPresets();
-        HardSetCamValue.FillInfo(3.0f, 10.0f, 0.0f, new Vector3(0, 0, 0));//hard set values for a third person camera
+        HardSetCamValue.FillInfo(6.0f, 13.0f, 0.0f, new Vector3(0, 3, 0));//hard set values for a third person camera
 
         cameraPresetValues[2].CombineInfo(HardSetCamValue);
 

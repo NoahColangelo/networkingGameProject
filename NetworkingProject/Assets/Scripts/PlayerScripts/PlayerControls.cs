@@ -8,19 +8,24 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region Variables (All)
 
-    PlayerInput _playerInput;
-
-    private Animator animator;
-
-    private Vector2 movementVector;
-
+    [SerializeField]
+    private LayerMask _groundLayerMask;
+    [SerializeField]
+    private Transform _modelTransform;
     [SerializeField]
     GameObject beam;
-
-    public static GameObject LocalPlayerInstance;
-
     [SerializeField]
     public PlayerUI playerUIPrefab;
+
+
+    private PlayerInput _playerInput;
+    private Animator animator;
+    private Vector2 _movementVector;
+    private Rigidbody _rb;
+
+    public float _movementSpeed = 10.0f;
+
+    public static GameObject LocalPlayerInstance;
 
     //possibly temp
     public float directionDampTime = 0.25f;
@@ -40,6 +45,9 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         else
             beam.SetActive(false);
 
+        if (!_modelTransform)
+            Debug.LogError("missing child transform", this);
+
         if (photonView.IsMine)
             PlayerControls.LocalPlayerInstance = gameObject;
 
@@ -50,6 +58,7 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
     {
         _playerInput = gameObject.GetComponent <PlayerInput>();
         MultiCam _multicam = gameObject.GetComponent<MultiCam>();
+        _rb = GetComponent<Rigidbody>();
 
         if (_multicam)
         {
@@ -67,7 +76,6 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         {
             PlayerUI _uiGo = Instantiate(playerUIPrefab);
             _uiGo.SetTarget(this);
-
         }
         else
             Debug.LogWarning("PlayerUI prefeb is missing", this);
@@ -93,18 +101,44 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         else
             isFiring = false;
 
-        movementVector = _playerInput.GetPlayerMovement().ReadValue<Vector2>();//reads the values of the keys being pressed from the input manager and stores them in movement vector
-
-        float h = movementVector.x;
-        float v = movementVector.y;
-
-        animator.SetFloat("Speed", h * h + v);
-        animator.SetFloat("Direction", h, directionDampTime, Time.deltaTime);
-
         if (health <= 0.0f && photonView.IsMine)
             GameManager.Instance.LeaveRoom();
 
-            beam.SetActive(isFiring);
+        //reads the values of the keys being pressed from the input manager and stores them in movement vector
+        _movementVector = _playerInput.GetPlayerMovement().ReadValue<Vector2>();
+
+        LookAtMousePosition();
+        UpdateAnimations();
+
+        beam.SetActive(isFiring);
+    }
+
+    void FixedUpdate()
+    {
+        Vector3 _movementVector3D = new Vector3(_movementVector.x, 0.0f, _movementVector.y);
+        _rb.MovePosition(_rb.position + _movementVector3D * (_movementSpeed * Time.fixedDeltaTime));
+    }
+
+    private void LookAtMousePosition()
+    {
+        Vector3 mousePos = _playerInput.GetMousePosition();
+
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);//shoots ray from camera to the current mouse position 
+
+        if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, _groundLayerMask))//checks if the ray has hit the ground mask layer
+        {
+            Vector3 lookAtRotation = new Vector3(raycastHit.point.x, transform.position.y, raycastHit.point.z);//sets the Y to that of the players so only the Y will rotate
+            _modelTransform.LookAt(lookAtRotation);//rotates the model instead of the parent gameobject to compenate for the camera stutter problem
+        }
+    }
+
+    private void UpdateAnimations()
+    {
+        float h = _movementVector.x;
+        float v = _movementVector.y;
+
+        animator.SetFloat("Speed", h * h + v);
+        animator.SetFloat("Direction", h, directionDampTime, Time.deltaTime);
     }
 
     #region Triggers and collisions
@@ -144,15 +178,10 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
         _uiGo.SetTarget(this);
     }
 
-
-#if UNITY_5_4_OR_NEWER
-
     private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadingMode)
     {
         this.CalledOnLevelWasLoaded(scene.buildIndex);
     }
-
-#endif
 
     #region IPunObservable implementation
 

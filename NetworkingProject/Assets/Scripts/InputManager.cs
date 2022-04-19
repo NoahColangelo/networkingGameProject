@@ -65,6 +65,14 @@ public class @InputManager : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""444b6644-0d4b-4dd6-a8e4-84285b94e9f0"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -177,6 +185,17 @@ public class @InputManager : IInputActionCollection, IDisposable
                     ""action"": ""Ultimate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b39ffb05-316a-423e-af64-3bda39730ed5"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseAndKeyboard"",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +227,7 @@ public class @InputManager : IInputActionCollection, IDisposable
         m_PlayerControls_Ability2 = m_PlayerControls.FindAction("Ability2", throwIfNotFound: true);
         m_PlayerControls_Ability3 = m_PlayerControls.FindAction("Ability3", throwIfNotFound: true);
         m_PlayerControls_Ultimate = m_PlayerControls.FindAction("Ultimate", throwIfNotFound: true);
+        m_PlayerControls_MousePosition = m_PlayerControls.FindAction("MousePosition", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -263,6 +283,7 @@ public class @InputManager : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_Ability2;
     private readonly InputAction m_PlayerControls_Ability3;
     private readonly InputAction m_PlayerControls_Ultimate;
+    private readonly InputAction m_PlayerControls_MousePosition;
     public struct PlayerControlsActions
     {
         private @InputManager m_Wrapper;
@@ -273,6 +294,7 @@ public class @InputManager : IInputActionCollection, IDisposable
         public InputAction @Ability2 => m_Wrapper.m_PlayerControls_Ability2;
         public InputAction @Ability3 => m_Wrapper.m_PlayerControls_Ability3;
         public InputAction @Ultimate => m_Wrapper.m_PlayerControls_Ultimate;
+        public InputAction @MousePosition => m_Wrapper.m_PlayerControls_MousePosition;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -300,6 +322,9 @@ public class @InputManager : IInputActionCollection, IDisposable
                 @Ultimate.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnUltimate;
                 @Ultimate.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnUltimate;
                 @Ultimate.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnUltimate;
+                @MousePosition.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMousePosition;
+                @MousePosition.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMousePosition;
+                @MousePosition.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMousePosition;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -322,6 +347,9 @@ public class @InputManager : IInputActionCollection, IDisposable
                 @Ultimate.started += instance.OnUltimate;
                 @Ultimate.performed += instance.OnUltimate;
                 @Ultimate.canceled += instance.OnUltimate;
+                @MousePosition.started += instance.OnMousePosition;
+                @MousePosition.performed += instance.OnMousePosition;
+                @MousePosition.canceled += instance.OnMousePosition;
             }
         }
     }
@@ -343,5 +371,6 @@ public class @InputManager : IInputActionCollection, IDisposable
         void OnAbility2(InputAction.CallbackContext context);
         void OnAbility3(InputAction.CallbackContext context);
         void OnUltimate(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
     }
 }

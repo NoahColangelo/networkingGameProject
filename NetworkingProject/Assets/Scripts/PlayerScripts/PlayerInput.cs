@@ -17,6 +17,8 @@ public class PlayerInput : MonoBehaviour
 
     private bool[] _abilityToggle = new bool[4];
 
+    private Vector3 _mousePosition;
+
     private void Awake()
     {
         inputManager = new InputManager();
@@ -47,6 +49,9 @@ public class PlayerInput : MonoBehaviour
 
         inputManager.PlayerControls.Ultimate.performed += Ultimate;//subscribes the Ultimate binding to an event
         inputManager.PlayerControls.Ultimate.Enable();
+
+        inputManager.PlayerControls.MousePosition.performed += MousePosition;//subscribes the MousePosition binding to an event
+        inputManager.PlayerControls.MousePosition.Enable();
     }
 
     public void OnDisable()
@@ -67,6 +72,9 @@ public class PlayerInput : MonoBehaviour
 
         inputManager.PlayerControls.Ultimate.performed -= Ultimate;//unsubscribes the Ultimate binding from the event
         inputManager.PlayerControls.Ultimate.Disable();
+
+        inputManager.PlayerControls.MousePosition.performed -= MousePosition;//ussubscribes the MousePosition binding from the event
+        inputManager.PlayerControls.MousePosition.Disable();
     }
     #endregion
 
@@ -82,25 +90,30 @@ public class PlayerInput : MonoBehaviour
     private void Ability1(InputAction.CallbackContext obj)//The subscribed Ability1 function
     {
         _abilityToggle[0] = true;
-        _ability1 = true;
+        //_ability1 = true;
     }
 
     private void Ability2(InputAction.CallbackContext obj)//The subscribed Ability2 function
     {
         _abilityToggle[1] = true;
-        _ability2 = true;
+        //_ability2 = true;
     }
 
     private void Ability3(InputAction.CallbackContext obj)//The subscribed Ability3 function
     {
         _abilityToggle[2] = true;
-        _ability3 = true;
+        //_ability3 = true;
     }
 
     private void Ultimate(InputAction.CallbackContext obj)//The subscribed Ultimate function
     {
         _abilityToggle[3] = true;
-        _ultimate = true;
+        //_ultimate = true;
+    }
+
+    private void MousePosition(InputAction.CallbackContext obj)//The subscribed MousePosition function
+    {
+        _mousePosition = inputManager.PlayerControls.MousePosition.ReadValue<Vector2>();
     }
 
     #endregion
@@ -126,45 +139,52 @@ public class PlayerInput : MonoBehaviour
         return _basicAttack;
     }
 
-    public bool GetAbility1()// Ability 1 get and set false
+    public Vector3 GetMousePosition()
     {
-        return _ability1;
+        return _mousePosition;
     }
 
-    public void SetAbility1False()
-    {
-        _ability1 = false;
-    }
+    #region old fuctions
+    //public bool GetAbility1()// Ability 1 get and set false
+    //{
+    //    return _ability1;
+    //}
 
-    public bool GetAbility2()//Ability 2 get and set false
-    {
-        return _ability2;
-    }
+    //public void SetAbility1False()
+    //{
+    //    _ability1 = false;
+    //}
 
-    public void SetAbility2False()
-    {
-        _ability2 = false;
-    }
+    //public bool GetAbility2()//Ability 2 get and set false
+    //{
+    //    return _ability2;
+    //}
 
-    public bool GetAbility3()//Ability 3 get and set false
-    {
-        return _ability3;
-    }
+    //public void SetAbility2False()
+    //{
+    //    _ability2 = false;
+    //}
 
-    public void SetAbility3False()
-    {
-        _ability3 = false;
-    }
+    //public bool GetAbility3()//Ability 3 get and set false
+    //{
+    //    return _ability3;
+    //}
 
-    public bool GetUltimate()//Ultimate get and set false
-    {
-        return _ultimate;
-    }
+    //public void SetAbility3False()
+    //{
+    //    _ability3 = false;
+    //}
 
-    public void SetUltimateFalse()
-    {
-        _ultimate = false;
-    }
+    //public bool GetUltimate()//Ultimate get and set false
+    //{
+    //    return _ultimate;
+    //}
+
+    //public void SetUltimateFalse()
+    //{
+    //    _ultimate = false;
+    //}
+    #endregion
 
     #endregion
 }

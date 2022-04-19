@@ -30,7 +30,6 @@ public class PlayerAbilityHolder : MonoBehaviour
             AbilityState temp = new AbilityState();
             _abilityStates[i] = temp;
             _abilityStates[i] = AbilityState.ready;
-            Debug.Log("added");
         }
     }
 

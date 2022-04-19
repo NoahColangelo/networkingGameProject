@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Room for 4.unity
     guid: b4754232e2217494da74d648630ab753
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/OtherLauncher.unity
     guid: cdf02eb08fe0ab042846cdeaabac30ec
   - enabled: 1

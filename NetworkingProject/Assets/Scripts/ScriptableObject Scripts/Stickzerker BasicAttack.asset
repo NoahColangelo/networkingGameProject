@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ded580475f134e7479db686444d7f0de, type: 3}
-  m_Name: Ability
+  m_Script: {fileID: 11500000, guid: cf0e77a6c67a25044a6850fa83ff91c7, type: 3}
+  m_Name: Stickzerker BasicAttack
   m_EditorClassIdentifier: 
-  _name: test ability
-  _cooldownTime: 3
-  _activeTime: 5
-  _cooldownTimer: 0
-  _activeTimer: 0
+  <_damage>k__BackingField: 10
+  <_lifeTime>k__BackingField: 1
+  <_speed>k__BackingField: 20
+  <_fireRate>k__BackingField: 0.25

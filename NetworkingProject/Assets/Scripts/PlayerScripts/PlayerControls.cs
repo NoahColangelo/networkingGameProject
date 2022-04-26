@@ -57,18 +57,17 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
     void Start()
     {
         _playerInput = gameObject.GetComponent <PlayerInput>();
-        MultiCam _multicam = gameObject.GetComponent<MultiCam>();
         _rb = GetComponent<Rigidbody>();
 
-        if (_multicam)
-        {
-            if (photonView.IsMine)
-            {
-                _multicam.OnStartFollowing();
-            }
-        }
-        else
-            Debug.LogError("MultiCam is not found", this);
+        //if (_multicam)
+        //{
+        //    if (photonView.IsMine)
+        //    {
+        //        _multicam.OnStartFollowing();
+        //    }
+        //}
+        //else
+        //    Debug.LogError("MultiCam is not found", this);
 
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -90,16 +89,16 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per frame
     void Update()
     {
-        //if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
-        //    return;
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+            return;
 
         if (!animator)
             return;
 
-        if (photonView.IsMine && _playerInput.GetBasicAttack())
-            isFiring = true;
-        else
-            isFiring = false;
+        //if (photonView.IsMine && _playerInput.GetBasicAttack())
+        //    isFiring = true;
+        //else
+        //    isFiring = false;
 
         if (health <= 0.0f && photonView.IsMine)
             GameManager.Instance.LeaveRoom();
@@ -121,15 +120,11 @@ public class PlayerControls : MonoBehaviourPunCallbacks, IPunObservable
 
     private void LookAtMousePosition()
     {
-        Vector3 mousePos = _playerInput.GetMousePosition();
+        //sets the Y to that of the players so only the Y will rotate
+        Vector3 lookAtRotation = new Vector3(_playerInput.GetMousePosition().x, transform.position.y, _playerInput.GetMousePosition().z);
 
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);//shoots ray from camera to the current mouse position 
-
-        if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, _groundLayerMask))//checks if the ray has hit the ground mask layer
-        {
-            Vector3 lookAtRotation = new Vector3(raycastHit.point.x, transform.position.y, raycastHit.point.z);//sets the Y to that of the players so only the Y will rotate
-            _modelTransform.LookAt(lookAtRotation);//rotates the model instead of the parent gameobject to compenate for the camera stutter problem
-        }
+        //rotates the model instead of the parent gameobject to compenate for the camera stutter problem
+        _modelTransform.LookAt(lookAtRotation);
     }
 
     private void UpdateAnimations()

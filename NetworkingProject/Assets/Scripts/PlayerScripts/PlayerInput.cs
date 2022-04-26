@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
+    [SerializeField]
+    private LayerMask _groundLayerMask;
 
     private InputManager inputManager;
     private InputAction playerMovement;
@@ -27,6 +29,18 @@ public class PlayerInput : MonoBehaviour
         for (int i = 0; i < _abilityToggle.Length; i++)//sets all the toggles to false
         {
             _abilityToggle[i] = false;
+        }
+    }
+
+    private void Update()
+    {
+        Vector3 _rawMousePosition = inputManager.PlayerControls.MousePosition.ReadValue<Vector2>();
+
+        Ray ray = Camera.main.ScreenPointToRay(_rawMousePosition);//shoots ray from camera to the current mouse position 
+
+        if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, _groundLayerMask))//checks if the ray has hit the ground mask layer
+        {
+            _mousePosition = raycastHit.point;
         }
     }
 
@@ -113,7 +127,8 @@ public class PlayerInput : MonoBehaviour
 
     private void MousePosition(InputAction.CallbackContext obj)//The subscribed MousePosition function
     {
-        _mousePosition = inputManager.PlayerControls.MousePosition.ReadValue<Vector2>();
+
+        
     }
 
     #endregion
